@@ -158,17 +158,17 @@
                             </div>
                             <div class="widget-body widget-body-md am-fr">
 
-                                <div class="am-progress-title">CPU Load <span class="am-fr am-progress-title-more">28% / 100%</span></div>
+                                <div class="am-progress-title">CPU Load <span id="cpuload" class="am-fr am-progress-title-more">0%</span></div>
                                 <div class="am-progress">
-                                    <div class="am-progress-bar" style="width: 15%"></div>
+                                    <div id="cpuloadline" class="am-progress-bar" ></div>
                                 </div>
-                                <div class="am-progress-title">Disk Usage <span class="am-fr am-progress-title-more">28% / 100%</span></div>
+                                <div class="am-progress-title">Disk Usage <span id="diskload" class="am-fr am-progress-title-more">0%</span></div>
                                 <div class="am-progress">
-                                    <div class="am-progress-bar  am-progress-bar-warning" style="width: 75%"></div>
+                                    <div id="diskloadline" class="am-progress-bar  am-progress-bar-warning"></div>
                                 </div>
-                                <div class="am-progress-title">Mem Usage <span class="am-fr am-progress-title-more">28% / 100%</span></div>
+                                <div class="am-progress-title">Mem Usage <span id="memload" class="am-fr am-progress-title-more">0%</span></div>
                                 <div class="am-progress">
-                                    <div class="am-progress-bar am-progress-bar-danger" style="width: 35%"></div>
+                                    <div id="memloadline" class="am-progress-bar am-progress-bar-danger"></div>
                                 </div>
                             </div>
                         </div>
@@ -288,6 +288,6 @@
     <script src="/static/assets/js/amazeui.tree.min.js"></script>
     <script src="/static/assets/js/amazeui.datatables.min.js"></script>
     <script src="/static/assets/js/dataTables.responsive.min.js"></script>
+    <script src="/static/layer/layer.js"></script>
     <script src="/static/assets/js/app.js"></script>
-    <script src="/static/assets/js/echartdata.js"></script>
 {% endblock %}
