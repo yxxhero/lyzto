@@ -4,7 +4,7 @@ from flask import session,redirect,url_for,escape
 from flask import request
 from flask import render_template
 from flask import jsonify,abort
-from model import db,app,userinfo
+from model import db,app,userinfo,event_info
 import psutil
 import os
 from functools import wraps
@@ -20,7 +20,7 @@ def login_required(func):
 @app.route('/',methods=['GET'])
 @login_required
 def index():
-    return render_template("index.html")
+    return render_template("index.html",username=session['username'])
 
 @app.route('/login',methods=['GET','POST'])
 def login():
@@ -38,11 +38,21 @@ def login():
 
 @app.route('/monitorlist',methods=['GET'])
 def monitorlist():
-    return render_template("hostlist.html")
+    return render_template("hostlist.html",username=session['username'])
 
 @app.route('/itemlist',methods=['GET'])
 def itemlist():
-    return render_template("itemlist.html")
+    return render_template("itemlist.html",username=session['username'])
+
+@app.route('/api/eventinfo',methods=['GET'])
+def eventinfo():
+    eventdic={}
+    eventdic["eventdata"]=[]
+    eventlist=event_info.query.order_by(event_info.create_time.desc()).limit(10).all()
+    for el in eventlist:
+        eventdic["eventdata"].append({"ip":el.ip,"event":el.information,"createtime":str(el.create_time)})
+    return jsonify(eventdic)
+    
 
 @app.route('/localinfo',methods=['GET'])
 def localinfo():

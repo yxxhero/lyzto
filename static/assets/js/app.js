@@ -2,6 +2,7 @@ $(function() {
     // 读取body data-type 判断是哪个页面然后执行相应页面方法，方法在下面。
     var dataType = $('body').attr('data-type');
     console.log(dataType);
+    $("#"+dataType).addClass("active");
     for (key in pageData) {
         if (key == dataType) {
             pageData[key]();
@@ -29,11 +30,28 @@ var pageData = {
     // 首页
     // ===============================================
     'index': function indexData() {
-        $('#example-r').DataTable({
-
+ tables= $('#example-r').DataTable({
             bInfo: false, //页脚信息
-            dom: 'ti'
+            dom: 'ti',
+            ajax: {
+            url: '/api/eventinfo',
+            dataSrc: 'eventdata'
+            },
+            columns: [
+        { data: 'createtime',width:'20%' },
+        { data: 'ip' ,width:'20%'},
+        { data: 'event' ,width:'60%'}
+                   ],
+        language: {
+            "sZeroRecords": "没有找到符合条件的数据",
+            "sEmptyTable": "数据为空" 
+            }
         });
+function recreatetable() {
+console.log("yes");
+tables.ajax.reload();
+}
+setInterval(recreatetable,5000);
 function loaditem(){
         try{
          $.ajax({
@@ -54,7 +72,7 @@ catch (e) {
 console.log(e.message);
 }
 }
-setInterval(loaditem,1000);
+setInterval(loaditem,5000);
 
         var echartsA = echarts.init(document.getElementById('tpl-echarts'));
         option = {

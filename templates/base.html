@@ -37,7 +37,7 @@
                     <ul>
                         <!-- 欢迎语 -->
                         <li class="am-text-sm tpl-header-navbar-welcome">
-                            <a href="javascript:;">欢迎你, <span>Amaze UI</span> </a>
+                            <a href="javascript:;">欢迎你, <span>{{username}}</span> </a>
                         </li>
 
                         <!-- 新邮件 -->
@@ -158,8 +158,72 @@
         </header>
         <!-- 侧边导航栏 -->
 
-    {% block sidebar %}{% endblock %}
+ <div class="left-sidebar">
+            <!-- 菜单 -->
+            <ul class="sidebar-nav">
+                <li class="sidebar-nav-link">
+                    <a id="index" href="/">
+                        <i class="am-icon-home sidebar-nav-link-logo"></i> 首页
+                    </a>
+                </li>
+                <li class="sidebar-nav-link">
+                    <a href="javascript:;" class="sidebar-nav-sub-title">
+                        <i class="am-icon-table sidebar-nav-link-logo"></i> 监控列表 
+                        <span class="am-icon-chevron-down am-fr am-margin-right-sm sidebar-nav-sub-ico"></span>
+                    </a>
+                    <ul class="sidebar-nav sidebar-nav-sub">
+                        <li class="sidebar-nav-link">
+                            <a href="/monitorlist" id="widgets">
+                                <span class="am-icon-angle-right sidebar-nav-link-logo"></span> 主机详情列表 
+                            </a>
+                        </li>
 
+                        <li class="sidebar-nav-link">
+                            <a href="/itemlist" id="itemlink">
+                                <span class="am-icon-angle-right sidebar-nav-link-logo"></span> 监控阙值列表 
+                            </a>
+                        </li>
+                    </ul>
+                
+                </li>
+                <li class="sidebar-nav-link">
+                    <a href="calendar.html" id="settings">
+                        <i class="am-icon-calendar sidebar-nav-link-logo"></i> 系统设置 
+                    </a>
+                </li>
+                <li class="sidebar-nav-link">
+                    <a href="form.html">
+                        <i class="am-icon-wpforms sidebar-nav-link-logo"></i> 表单
+
+                    </a>
+                </li>
+                <li class="sidebar-nav-link">
+                    <a href="chart.html">
+                        <i class="am-icon-bar-chart sidebar-nav-link-logo"></i> 图表
+
+                    </a>
+                </li>
+
+                <li class="sidebar-nav-link">
+                    <a href="javascript:;" class="sidebar-nav-sub-title">
+                        <i class="am-icon-table sidebar-nav-link-logo"></i> 数据列表
+                        <span class="am-icon-chevron-down am-fr am-margin-right-sm sidebar-nav-sub-ico"></span>
+                    </a>
+                    <ul class="sidebar-nav sidebar-nav-sub">
+                        <li class="sidebar-nav-link">
+                            <a href="table-list.html">
+                                <span class="am-icon-angle-right sidebar-nav-link-logo"></span> 文字列表
+                            </a>
+                        </li>
+
+                        <li class="sidebar-nav-link">
+                            <a href="table-list-img.html">
+                                <span class="am-icon-angle-right sidebar-nav-link-logo"></span> 图文列表
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+        </div>
         <!-- 内容区域 -->
     {% block contextbody %}{% endblock %}
     </div>

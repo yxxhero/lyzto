@@ -47,5 +47,15 @@ class host_info(db.Model):
 
     def __repr__(self):
         return json.dumps({"id":self.id,"ip":self.ip,"infomation":self.information,"updatetime":self.updatetime,"description":self.description}) 
+
+class event_info(db.Model):
+    __tablename__ = 'event_info'
+    id = db.Column(db.Integer, primary_key=True)
+    ip = db.Column(db.String(100))
+    information=db.Column(db.String(500))
+    create_time = db.Column(db.DateTime, nullable=False)
+
+    def __repr__(self):
+        return json.dumps({"id":self.id,"ip":self.ip,"infomation":self.information,"create_time":self.create_time},cls=MyEncoder) 
 if __name__=="__main__":
     manager.run()
