@@ -22,6 +22,22 @@ $(function() {
     //       storageSave(saveSelectColor);
     //     }
 })
+function delhost(id) {
+         $.ajax({
+                url:'/deletehost?id='+id,
+                type:'GET',
+                success:function(data){
+                console.log(data);
+                if ( data.error == 1)
+                {
+                layer.msg(data.msg,{icon: 2});
+                }else{
+                layer.msg(data.msg,{icon: 1});
+                }
+               }
+             });
+
+}
 
 
 // 页面数据
@@ -33,12 +49,13 @@ var pageData = {
  tables= $('#example-r').DataTable({
             bInfo: false, //页脚信息
             dom: 'ti',
+            "order": [[ 0, "desc" ]],
             ajax: {
             url: '/api/eventinfo',
             dataSrc: 'eventdata'
             },
             columns: [
-        { data: 'createtime',width:'20%' },
+        { data: 'createtime',width:'20%'},
         { data: 'ip' ,width:'20%'},
         { data: 'event' ,width:'60%'}
                    ],
@@ -72,6 +89,7 @@ catch (e) {
 console.log(e.message);
 }
 }
+loaditem();
 setInterval(loaditem,5000);
 
         var echartsA = echarts.init(document.getElementById('tpl-echarts'));
@@ -121,8 +139,31 @@ setInterval(loaditem,5000);
         echartsA.setOption(option);
     },
     'widgets': function indexData() {
-        $('#example-r').DataTable({
+ hosttables= $('#example-r').DataTable({
+            ajax: {
+            url: '/api/hostlistinfo',
+            dataSrc: 'hostinfodata'
+            },
+            columns: [
+        { data: 'ip' ,width:'20%'},
+        { data: 'description',width:'20%'},
+        { data: 'status',width:'10%'},
+        { data: 'updatetime' ,width:'20%'},
+        { data: 'id' ,width:'30%',"orderable": false,"render": function (data, type, row, meta) {
+           return data ='<div class="tpl-table-black-operation"> <a href="/hostdetails?id='+data+'"><i class="am-icon-pencil"></i> 详情</a><a href="javascript:;" onclick="delhost('+data+')" class="tpl-table-black-operation-del"><i class="am-icon-trash"></i> 删除</a></div>'
+        }
+}
+                   ],
+        language: {
+            "sZeroRecords": "没有找到符合条件的数据",
+            "sEmptyTable": "数据为空" 
+            }
         });
+function recreatetable() {
+console.log("yes");
+hosttables.ajax.reload();
+}
+setInterval(recreatetable,5000);
 },
     "login": function login() {
        $('#submitbutton').on('click', function(){ 

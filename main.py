@@ -4,14 +4,14 @@ from flask import session,redirect,url_for,escape
 from flask import request
 from flask import render_template
 from flask import jsonify,abort
-from model import db,app,userinfo,event_info
+from model import db,app,userinfo,event_info,host_info
 import psutil
 import os
+import time
 from functools import wraps
 def login_required(func):
     @wraps(func)
     def decorated_function(*args, **kwargs):
-        print session.get("logged_in")
         if session.get("logged_in") and session.get("username") != None:
             return func(*args, **kwargs)
         return redirect(url_for('login', next=request.url))
@@ -48,11 +48,38 @@ def itemlist():
 def eventinfo():
     eventdic={}
     eventdic["eventdata"]=[]
-    eventlist=event_info.query.order_by(event_info.create_time.desc()).limit(10).all()
+    eventlist=event_info.query.order_by(event_info.create_time).limit(10).all()
     for el in eventlist:
-        eventdic["eventdata"].append({"ip":el.ip,"event":el.information,"createtime":str(el.create_time)})
+        eventdic["eventdata"].append({"id":el.id,"ip":el.ip,"event":el.information,"createtime":str(el.create_time)})
     return jsonify(eventdic)
     
+@app.route('/deletehost',methods=['GET'])
+@login_required
+def deletehost():
+    id=request.args.get('id',None)
+    if id:
+        try:
+            mod = host_info.query.filter_by(id=id).first()
+            db.session.delete(mod)
+            db.session.commit()
+        except Exception,e:
+            return jsonify({"error":1,"msg":str(e)})
+        else:
+            return jsonify({"error":0,"msg":u"删除成功"})
+    else:
+        return jsonify({"error":1,"msg":u"参数错误"})
+
+@app.route('/api/hostlistinfo',methods=['GET'])
+def hostlistinfo():
+    hostinfodic={}
+    hostinfodic["hostinfodata"]=[]
+    hostinfolist=host_info.query.all()
+    for hl in hostinfolist:
+        if time.time() - time.mktime(time.strptime(str(hl.updatetime),"%Y-%m-%d %H:%M:%S"))>=120:
+            hostinfodic["hostinfodata"].append({"id":hl.id,"ip":hl.ip,"description":hl.description,"updatetime":str(hl.updatetime),"status":u"异常"})
+        else:
+            hostinfodic["hostinfodata"].append({"id":hl.id,"ip":hl.ip,"description":hl.description,"updatetime":str(hl.updatetime),"status":u"正常"})
+    return jsonify(hostinfodic)
 
 @app.route('/localinfo',methods=['GET'])
 def localinfo():
@@ -69,6 +96,31 @@ def loginout():
     session.pop('logged_in', None)
     session.pop('username', None)
     return redirect(url_for("login"))
+
+
+@app.route('/api/posthostinfo',methods=['POST'])
+def posthostinfo():
+    if request.form.get("host_info",None):
+         info_dict=request.form["host_info"]
+         ip=eval(info_dict)["ip_dict"]['gatewayifaceip']
+         description=eval(info_dict)["description"]
+         try:
+             info_result=host_info.query.filter_by(ip=ip).all()
+             if len(info_result)==0:
+                 db.session.add(host_info(ip=ip,description=description,information=info_dict))
+                 db.session.add(event_info(ip=ip,information=u"加入监控队列",create_time=time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))))
+                 db.session.commit()
+             else:
+                 update_sql=host_info.query.filter_by(ip=ip).first()
+                 update_sql.information=info_dict
+                 update_sql.description=description
+                 db.session.commit()
+         except Exception,e:
+             return jsonify({"error":1,"msg":str(e)})
+         else:
+             return jsonify({"error":0})
+    else:
+        return jsonify({"error":1,"msg":"info Incomplete"})
 
 
 if __name__=='__main__':
