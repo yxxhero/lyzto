@@ -34,12 +34,13 @@ var pageData = {
             bInfo: false, //页脚信息
             dom: 'ti'
         });
+function loaditem(){
+        try{
          $.ajax({
                 url:'/localinfo',
                 type:'GET',
                 success:function(data){
                 console.log(data);
-                layer.msg(String(data.diskpercent));
                $('#cpuload').html(String(data.loadpercent)+'%');
                $('#cpuloadline').width(String(data.loadpercent)+'%');
                $('#diskload').html(String(data.diskpercent)+'%');
@@ -48,7 +49,12 @@ var pageData = {
                $('#memloadline').width(String(data.mempercent)+'%');
                }
              });
-
+}
+catch (e) {
+console.log(e.message);
+}
+}
+setInterval(loaditem,1000);
 
         var echartsA = echarts.init(document.getElementById('tpl-echarts'));
         option = {
