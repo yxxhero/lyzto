@@ -30,7 +30,7 @@ class status_history(db.Model):
     __tablename__ = 'status_history'
     id = db.Column(db.Integer, primary_key=True)
     mid = db.Column(db.String(100))
-    item_type=db.Column(db.String(100),server_default="dark")
+    item_type=db.Column(db.String(100),server_default="disk")
     last_status = db.Column(db.Boolean, nullable=False)
     alarm_time = db.Column(db.String(100), nullable=True)
     last_alarm_time = db.Column(db.String(100), nullable=True)
@@ -43,6 +43,7 @@ class host_info(db.Model):
     ip = db.Column(db.String(100), unique=True)
     description = db.Column(db.String(100), unique=True)
     information=db.Column(db.Text(1200))
+    host_group=db.Column(db.String(100),server_default="default")
     updatetime = db.Column(db.TIMESTAMP(True), nullable=False)
 
     def __repr__(self):

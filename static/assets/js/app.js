@@ -147,7 +147,14 @@ setInterval(loaditem,5000);
             columns: [
         { data: 'ip' ,width:'20%'},
         { data: 'description',width:'20%'},
-        { data: 'status',width:'10%'},
+        { data: 'status',width:'10%' ,"render": function (data, type, row, meta) {
+           if (data==0){
+           return data ='<i class="fa fa-circle" aria-hidden="true" style="color:green;"></i>'}
+else
+{
+return data ='<i class="fa fa-circle" aria-hidden="true" style="color:red;"></i>'
+}
+}},
         { data: 'updatetime' ,width:'20%'},
         { data: 'id' ,width:'30%',"orderable": false,"render": function (data, type, row, meta) {
            return data ='<div class="tpl-table-black-operation"> <a href="/hostdetails?id='+data+'"><i class="am-icon-pencil"></i> 详情</a><a href="javascript:;" onclick="delhost('+data+')" class="tpl-table-black-operation-del"><i class="am-icon-trash"></i> 删除</a></div>'
@@ -164,6 +171,155 @@ console.log("yes");
 hosttables.ajax.reload();
 }
 setInterval(recreatetable,5000);
+},
+     "hosttree": function hosttree(){
+var hostid = $('body').attr('data-id');
+$("#test-circle").circliful({
+            animation: 0,
+            animationStep: 5,
+            foregroundBorderWidth: 6,
+            backgroundColor: "none",
+            fillColor: '#eee',
+            percent: 38,
+            textSize: 28,
+            textColor: '#666',
+            icon: 'f0a0',
+            iconPosition: 'middle',
+            textStyle:'font-size:19px;',
+            text: 'Space Left',
+            textBelow: true
+        });
+$("#test-circle1").circliful({
+            animation: 0,
+            animationStep: 5,
+            foregroundBorderWidth: 6,
+            backgroundColor: "none",
+            fillColor: '#eee',
+            percent: 38,
+            textStyle:'font-size:19px;',
+            textSize: 28,
+            textColor: '#666',
+            icon: 'f23a',
+            iconPosition: 'middle',
+            text: 'mem Left',
+            textBelow: true
+        });
+$("#test-circle2").circliful({
+            animation: 0,
+            animationStep: 5,
+            foregroundBorderWidth: 6,
+            backgroundColor: "none",
+            fillColor: '#eee',
+            percent: 38,
+            textSize: 28,
+            textStyle:'font-size:19px;',
+            textColor: '#666',
+            icon: 'f2d5',
+            iconPosition: 'middle',
+            text: 'cache Left',
+            textBelow: true
+        });
+$("#test-circle3").circliful({
+            animation: 0,
+            animationStep: 5,
+            foregroundBorderWidth: 6,
+            backgroundColor: "none",
+            fillColor: '#eee',
+            textStyle:'font-size:19px;',
+            percent: 38,
+            textSize: 28,
+            textColor: '#666',
+            icon: 'f0ae',
+            iconPosition: 'middle',
+            text: 'load Left',
+            textBelow: true
+        });
+var echartsA = echarts.init(document.getElementById('tpl-echarts'));
+var echartsB = echarts.init(document.getElementById('tpl-echarts1'));
+var echartsC = echarts.init(document.getElementById('tpl-echarts2'));
+options = {
+    tooltip : {
+        trigger: 'axis',
+        axisPointer: {
+            type: 'cross',
+            label: {
+                backgroundColor: '#6a7985'
+            }
+        }
+    },
+    legend: {
+        data:['邮件营销','联盟广告','视频广告','直接访问','搜索引擎']
+    },
+    grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+    },
+    xAxis : [
+        {
+            type : 'category',
+            boundaryGap : false,
+            data : ['周一','周二','周三','周四','周五','周六','周日']
+        }
+    ],
+    yAxis : [
+        {
+            type : 'value'
+        }
+    ],
+    series : [
+        {
+            name:'邮件营销',
+            type:'line',
+            stack: '总量',
+            areaStyle: {normal: {}},
+            data:[120, 132, 101, 134, 90, 230, 210]
+        },
+        {
+            name:'联盟广告',
+            type:'line',
+            stack: '总量',
+            areaStyle: {normal: {}},
+            data:[220, 182, 191, 234, 290, 330, 310]
+        },
+        {
+            name:'视频广告',
+            type:'line',
+            stack: '总量',
+            areaStyle: {normal: {}},
+            data:[150, 232, 201, 154, 190, 330, 410]
+        },
+        {
+            name:'直接访问',
+            type:'line',
+            stack: '总量',
+            areaStyle: {normal: {}},
+            data:[320, 332, 301, 334, 390, 330, 320]
+        },
+        {
+            name:'搜索引擎',
+            type:'line',
+            stack: '总量',
+            label: {
+                normal: {
+                    show: true,
+                    position: 'top'
+                }
+            },
+            areaStyle: {normal: {}},
+            data:[820, 932, 901, 934, 1290, 1330, 1320]
+        }
+    ]
+};
+echartsA.setOption(options);
+echartsB.setOption(options);
+echartsC.setOption(options);
+window.addEventListener("resize", function () {
+echartsA.resize();
+echartsB.resize();
+echartsC.resize();
+ });
 },
     "login": function login() {
        $('#submitbutton').on('click', function(){ 

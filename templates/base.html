@@ -4,6 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
     {% block header %}{% endblock %}
 
 </head>
@@ -24,13 +25,6 @@
                     <span>
 
                 </span>
-                </div>
-                <!-- 搜索 -->
-                <div class="am-fl tpl-header-search">
-                    <form class="tpl-header-search-form" action="javascript:;">
-                        <button class="tpl-header-search-btn am-icon-search"></button>
-                        <input class="tpl-header-search-box" type="text" placeholder="搜索内容...">
-                    </form>
                 </div>
                 <!-- 其它功能-->
                 <div class="am-fr tpl-header-navbar">
@@ -187,42 +181,47 @@
                 
                 </li>
                 <li class="sidebar-nav-link">
-                    <a href="calendar.html" id="settings">
-                        <i class="am-icon-calendar sidebar-nav-link-logo"></i> 系统设置 
-                    </a>
-                </li>
-                <li class="sidebar-nav-link">
-                    <a href="form.html">
-                        <i class="am-icon-wpforms sidebar-nav-link-logo"></i> 表单
-
-                    </a>
-                </li>
-                <li class="sidebar-nav-link">
-                    <a href="chart.html">
-                        <i class="am-icon-bar-chart sidebar-nav-link-logo"></i> 图表
-
-                    </a>
-                </li>
-
-                <li class="sidebar-nav-link">
                     <a href="javascript:;" class="sidebar-nav-sub-title">
-                        <i class="am-icon-table sidebar-nav-link-logo"></i> 数据列表
+                        <i class="am-icon-list-alt sidebar-nav-link-logo"></i> 图形列表 
                         <span class="am-icon-chevron-down am-fr am-margin-right-sm sidebar-nav-sub-ico"></span>
                     </a>
                     <ul class="sidebar-nav sidebar-nav-sub">
-                        <li class="sidebar-nav-link">
-                            <a href="table-list.html">
-                                <span class="am-icon-angle-right sidebar-nav-link-logo"></span> 文字列表
-                            </a>
-                        </li>
+                <li class="sidebar-nav-link">
+                    <a href="/hosttree" id="hosttree">
+                        <i class="am-icon-bar-chart sidebar-nav-link-logo"></i> 图形树
 
-                        <li class="sidebar-nav-link">
-                            <a href="table-list-img.html">
-                                <span class="am-icon-angle-right sidebar-nav-link-logo"></span> 图文列表
-                            </a>
-                        </li>
+                    </a>
+                </li>
                     </ul>
                 </li>
+                <li class="sidebar-nav-link">
+                    <a href="javascript:;" class="sidebar-nav-sub-title">
+                        <i class="am-icon-cogs sidebar-nav-link-logo"></i> 系统设置 
+                        <span class="am-icon-chevron-down am-fr am-margin-right-sm sidebar-nav-sub-ico"></span>
+                    </a>
+                    <ul class="sidebar-nav sidebar-nav-sub">
+                <li class="sidebar-nav-link">
+                    <a href="/hosttree" id="hosttree">
+                        <i class="am-icon-bar-chart sidebar-nav-link-logo"></i> 增加图形节点
+
+                    </a>
+                </li>
+                <li class="sidebar-nav-link">
+                    <a href="/hosttree" id="hosttree">
+                        <i class="am-icon-bar-chart sidebar-nav-link-logo"></i> 主机设置 
+
+                    </a>
+                </li>
+                <li class="sidebar-nav-link">
+                    <a href="/hosttree" id="hosttree">
+                        <i class="am-icon-bar-chart sidebar-nav-link-logo"></i> 阈值设置 
+
+                    </a>
+                </li>
+                    </ul>
+
+                </li>
+
         </div>
         <!-- 内容区域 -->
     {% block contextbody %}{% endblock %}

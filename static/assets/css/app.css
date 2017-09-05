@@ -456,7 +456,7 @@ ul.tpl-dropdown-content .tpl-dropdown-menu-messages-item .menu-messages-content 
 }
 .widget-head {
   width: 100%;
-  padding: 15px;
+  padding: 5px;
 }
 .widget-title {
   font-size: 14px;
@@ -494,7 +494,7 @@ ul.tpl-dropdown-content .tpl-dropdown-menu-messages-item .menu-messages-content 
   margin-bottom: 8px;
 }
 .widget-body-md {
-  height: 200px;
+  height: 300px;
 }
 .widget-body-lg {
   min-height: 330px;
@@ -1095,6 +1095,69 @@ ul.tpl-dropdown-content .tpl-dropdown-menu-messages-item .menu-messages-content 
 }
 .theme-white .widget-blue .widget-statistic-icon {
   color: #3596BF;
+}
+.theme-white .widget-blue-tree {
+  min-height: 228px;
+  border: 1px solid #228fbd;
+  border-top: 2px solid #228fbd;
+  background: #228fbd;
+  color: #ffffff;
+  padding: 12px 17px;
+  padding-left: 22px;
+}
+.theme-white .widget-blue-tree .widget-statistic-icon {
+  color: #3596BF;
+}
+.theme-white .widget-green-tree {
+  min-height: 228px;
+  border: 1px solid #009688;
+  border-top: 2px solid #009688;
+  background: #009688;
+  color: #ffffff;
+  padding: 12px 17px;
+  padding-left: 22px;
+}
+.theme-white .widget-green-tree .widget-statistic-icon {
+  color: #009688;
+}
+.theme-white .widget-lowgreen-tree {
+  min-height: 228px;
+  border: 1px solid #5FB878;
+  border-top: 2px solid #5FB878;
+  background: #5FB878;
+  color: #ffffff;
+  padding: 12px 17px;
+  padding-left: 22px;
+}
+.theme-white .widget-lowgreen-tree .widget-statistic-icon {
+  color: #5FB878;
+}
+.theme-white .widget-lowblue-tree {
+  min-height: 228px;
+  border: 1px solid #1E9FFF;
+  border-top: 2px solid #1E9FFF;
+  background: #1E9FFF;
+  color: #ffffff;
+  padding: 12px 17px;
+  padding-left: 22px;
+}
+.theme-white .widget-lowblue-tree .widget-statistic-icon {
+  color: #1E9FFF;
+}
+.theme-white .widget-orange-tree {
+  min-height: 228px;
+  border: 1px solid #FFB800;
+  border-top: 2px solid #FFB800;
+  background: #FFB800;
+  color: #ffffff;
+  padding: 12px 17px;
+  padding-left: 22px;
+}
+.theme-white .widget-orange-tree .widget-statistic-icon {
+  color: #FFB800;
+}
+.theme-white .widget-white-tree {
+text-align: center;
 }
 .theme-white .widget-statistic-icon {
   position: absolute;
@@ -1922,3 +1985,9 @@ ul.tpl-dropdown-content .tpl-dropdown-menu-messages-item .menu-messages-content 
     right: 0;
   }
 }
+.sidetree {
+font-size: 15px;
+margin-top: -5%;
+}
+.circlcenter{text-align:center;width:60%;margin:0 auto;}
+

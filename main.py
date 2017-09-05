@@ -22,6 +22,18 @@ def login_required(func):
 def index():
     return render_template("index.html",username=session['username'])
 
+@app.route('/hosttree',methods=['GET'])
+@login_required
+def hosttree():
+    return render_template("tree.html",username=session['username'])
+
+@app.route('/treedata',methods=['GET'])
+@login_required
+def treedata():
+    data = [{"title": '业务机器',"type": 'folder',"products": [{"title": 'iPhone',"type": 'item',"attr":{"id":"1"}}],"attr":{"id":"2"}}] 
+    return jsonify(data)
+
+
 @app.route('/login',methods=['GET','POST'])
 def login():
     error = None
@@ -37,14 +49,26 @@ def login():
         return render_template("login.html")
 
 @app.route('/monitorlist',methods=['GET'])
+@login_required
 def monitorlist():
     return render_template("hostlist.html",username=session['username'])
 
+@app.route('/hostdetails',methods=['GET'])
+@login_required
+def hostdetails():
+    id = request.args.get('id',None)
+    if id:
+        return render_template("tree.html",username=session['username'],id=id)
+    else:
+        return jsonify({"error":1,"msg":"no id"})
+
 @app.route('/itemlist',methods=['GET'])
+@login_required
 def itemlist():
     return render_template("itemlist.html",username=session['username'])
 
 @app.route('/api/eventinfo',methods=['GET'])
+@login_required
 def eventinfo():
     eventdic={}
     eventdic["eventdata"]=[]
@@ -76,9 +100,9 @@ def hostlistinfo():
     hostinfolist=host_info.query.all()
     for hl in hostinfolist:
         if time.time() - time.mktime(time.strptime(str(hl.updatetime),"%Y-%m-%d %H:%M:%S"))>=120:
-            hostinfodic["hostinfodata"].append({"id":hl.id,"ip":hl.ip,"description":hl.description,"updatetime":str(hl.updatetime),"status":u"异常"})
+            hostinfodic["hostinfodata"].append({"id":hl.id,"ip":hl.ip,"description":hl.description,"updatetime":str(hl.updatetime),"status":1})
         else:
-            hostinfodic["hostinfodata"].append({"id":hl.id,"ip":hl.ip,"description":hl.description,"updatetime":str(hl.updatetime),"status":u"正常"})
+            hostinfodic["hostinfodata"].append({"id":hl.id,"ip":hl.ip,"description":hl.description,"updatetime":str(hl.updatetime),"status":0})
     return jsonify(hostinfodic)
 
 @app.route('/localinfo',methods=['GET'])
