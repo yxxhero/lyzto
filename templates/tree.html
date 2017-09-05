@@ -1,0 +1,146 @@
+{% extends "treebase.html" %}
+{% block header %}
+    <title>监控报警平台</title>
+    <meta name="description" content="监控报警平台">
+    <meta name="keywords" content="index">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link rel="icon" type="image/png" href="/static/assets/i/favicon.png">
+    <link rel="apple-touch-icon-precomposed" href="/static/assets/i/app-icon72x72@2x.png">
+    <meta name="apple-mobile-web-app-title" content="Amaze UI" />
+    <script src="/static/assets/js/echarts.min.js"></script>
+    <link rel="stylesheet" href="/static/assets/css/amazeui.min.css" />
+    <link rel="stylesheet" href="/static/assets/css/amazeui.tree.min.css" />
+    <link rel="stylesheet" href="/static/assets/css/amazeui.datatables.min.css" />
+    <link rel="stylesheet" href="../../../css/awesomeStyle/awesome.css" type="text/css">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/circliful/css/material-design-iconic-font.min.css">
+    <link rel="stylesheet" href="/static/circliful/css/jquery.circliful.css">
+    <link rel="stylesheet" href="/static/zTree/css/zTreeStyle/zTreeStyle.css" type="text/css">
+    <link rel="stylesheet" href="/static/assets/css/app.css">
+    <script src="/static/assets/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/static/zTree/js/jquery.ztree.core.js"></script>
+    <script type="text/javascript" src="/static/zTree/js/jquery.ztree.excheck.js"></script>
+    <script type="text/javascript" src="/static/zTree/js/jquery.ztree.exedit.js"></script>
+{% endblock %}
+{% block bodytype %}
+<body data-type="hosttree" data-id="{{id}}"class="theme-white">
+{% endblock %}
+{% block contextbody %}
+        <div class="tpl-content-wrapper">
+
+            <div class="row-content am-cf">
+                <div class="row  am-cf">
+                    <div class="am-u-sm-12 am-u-md-6 am-u-lg-3">
+                        <div class="widget widget-white-tree am-cf">
+                         <div class="circlcenter">
+                         <div id="test-circle"></div> 
+                        </div>
+                        </div>
+                    </div>
+                    <div class="am-u-sm-12 am-u-md-6 am-u-lg-3">
+                        <div class="widget widget-white-tree am-cf">
+                         <div class="circlcenter">
+                         <div id="test-circle1"></div> 
+                        </div>
+                        </div>
+                    </div>
+                    <div class="am-u-sm-12 am-u-md-6 am-u-lg-3">
+                        <div class="widget widget-white-tree am-cf">
+                         <div class="circlcenter">
+                         <div id="test-circle2"></div> 
+                        </div>
+                        </div>
+                    </div>
+                    <div class="am-u-sm-12 am-u-md-6 am-u-lg-3">
+                        <div class="widget widget-white-tree am-cf">
+                         <div class="circlcenter">
+                         <div id="test-circle3"></div> 
+                        </div>
+                        </div>
+                    </div>
+               </div>
+                <div class="row am-cf">
+                    <div class="am-u-sm-12 am-u-md-6">
+                        <div class="widget am-cf">
+                            <div class="widget-head am-cf">
+                                <div class="widget-title am-fl">负载趋势图</div>
+                                <div class="widget-function am-fr">
+                                    <a href="javascript:;" class="am-icon-cog"></a>
+                                </div>
+                            </div>
+                            <div class="widget-body-md widget-body tpl-amendment-echarts am-fr" id="tpl-echarts">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="am-u-sm-12 am-u-md-6">
+                        <div class="widget am-cf">
+                            <div class="widget-head am-cf">
+                                <div class="widget-title am-fl">连接数趋势图</div>
+                                <div class="widget-function am-fr">
+                                    <a href="javascript:;" class="am-icon-cog"></a>
+                                </div>
+                            </div>
+                            <div class="widget-body-md widget-body tpl-amendment-echarts am-fr" id="tpl-echarts1">
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class="row am-cf">
+                    <div class="am-u-sm-12 am-u-md-12 am-u-lg-12 widget-margin-bottom-lg">
+
+                        <div class="widget am-cf widget-body-lg">
+                          <div class="widget-head am-cf">
+                                <div class="widget-title am-fl">流量趋势图</div>
+                                <div class="widget-function am-fr">
+                                    <a href="javascript:;" class="am-icon-cog"></a>
+                                </div>
+                            </div>
+                              <div class="widget-body-md widget-body tpl-amendment-echarts am-fr" id="tpl-echarts2">
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block jstail %}
+    <script src="/static/assets/js/amazeui.min.js"></script>
+    <script src="/static/assets/js/amazeui.tree.min.js"></script>
+    <script src="/static/assets/js/amazeui.datatables.min.js"></script>
+    <script src="/static/assets/js/dataTables.responsive.min.js"></script>
+    <script src="/static/circliful/js/jquery.circliful.js"></script>
+    <script src="/static/layer/layer.js"></script>
+    <script src="/static/assets/js/app.js"></script>
+        <script type="text/javascript">
+                var setting = {
+                        view: {
+                                showLine: false
+                        },
+                        data: {
+                                simpleData: {
+                                        enable: true
+                                }
+                        }
+                };
+
+                var zNodes =[
+                 {name: "父节点1", open:true,children: [
+		{name: "子节点1"},
+		{name: "子节点2"}
+                ]}
+                ];
+
+                $(document).ready(function(){
+                        $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+                });
+        </script>
+{% endblock %}
