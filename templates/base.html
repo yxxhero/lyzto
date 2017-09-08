@@ -141,7 +141,7 @@
 
                         <!-- 退出 -->
                         <li class="am-text-sm">
-                            <a href="/logout">
+                            <a href="javascript:void(0)" onclick="alogout()">
                                 <span class="am-icon-sign-out"></span> 退出
                             </a>
                         </li>
@@ -201,20 +201,26 @@
                     </a>
                     <ul class="sidebar-nav sidebar-nav-sub">
                 <li class="sidebar-nav-link">
-                    <a href="/hosttree" id="hosttree">
-                        <i class="am-icon-bar-chart sidebar-nav-link-logo"></i> 增加图形节点
+                    <a href="/settings?method=node" id="node">
+                        <i class="am-icon-codepen sidebar-nav-link-logo"></i> 图形节点设置
 
                     </a>
                 </li>
                 <li class="sidebar-nav-link">
-                    <a href="/hosttree" id="hosttree">
-                        <i class="am-icon-bar-chart sidebar-nav-link-logo"></i> 主机设置 
+                    <a href="/settings?method=host" id="host">
+                        <i class="am-icon-laptop sidebar-nav-link-logo"></i> 主机设置 
 
                     </a>
                 </li>
                 <li class="sidebar-nav-link">
-                    <a href="/hosttree" id="hosttree">
-                        <i class="am-icon-bar-chart sidebar-nav-link-logo"></i> 阈值设置 
+                    <a href="/settings?method=alarmset" id="alarmset">
+                        <i class="am-icon-bell sidebar-nav-link-logo"></i> 报警设置 
+
+                    </a>
+                </li>
+                <li class="sidebar-nav-link">
+                    <a href="/settings?method=threshold" id="threshold">
+                        <i class="am-icon-exclamation-circle sidebar-nav-link-logo"></i> 阈值设置 
 
                     </a>
                 </li>

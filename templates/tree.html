@@ -13,8 +13,7 @@
     <link rel="stylesheet" href="/static/assets/css/amazeui.min.css" />
     <link rel="stylesheet" href="/static/assets/css/amazeui.tree.min.css" />
     <link rel="stylesheet" href="/static/assets/css/amazeui.datatables.min.css" />
-    <link rel="stylesheet" href="../../../css/awesomeStyle/awesome.css" type="text/css">
-    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css">
     <link rel="stylesheet" href="/static/circliful/css/material-design-iconic-font.min.css">
     <link rel="stylesheet" href="/static/circliful/css/jquery.circliful.css">
     <link rel="stylesheet" href="/static/zTree/css/zTreeStyle/zTreeStyle.css" type="text/css">
@@ -22,7 +21,6 @@
     <script src="/static/assets/js/jquery.min.js"></script>
     <script type="text/javascript" src="/static/zTree/js/jquery.ztree.core.js"></script>
     <script type="text/javascript" src="/static/zTree/js/jquery.ztree.excheck.js"></script>
-    <script type="text/javascript" src="/static/zTree/js/jquery.ztree.exedit.js"></script>
 {% endblock %}
 {% block bodytype %}
 <body data-type="hosttree" data-id="{{id}}"class="theme-white">
@@ -120,27 +118,4 @@
     <script src="/static/circliful/js/jquery.circliful.js"></script>
     <script src="/static/layer/layer.js"></script>
     <script src="/static/assets/js/app.js"></script>
-        <script type="text/javascript">
-                var setting = {
-                        view: {
-                                showLine: false
-                        },
-                        data: {
-                                simpleData: {
-                                        enable: true
-                                }
-                        }
-                };
-
-                var zNodes =[
-                 {name: "父节点1", open:true,children: [
-		{name: "子节点1"},
-		{name: "子节点2"}
-                ]}
-                ];
-
-                $(document).ready(function(){
-                        $.fn.zTree.init($("#treeDemo"), setting, zNodes);
-                });
-        </script>
 {% endblock %}

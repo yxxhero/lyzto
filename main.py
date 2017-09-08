@@ -8,6 +8,9 @@ from model import db,app,userinfo,event_info,host_info
 import psutil
 import os
 import time
+import python_jwt as jwt
+import datetime
+from decimal import Decimal
 from functools import wraps
 def login_required(func):
     @wraps(func)
@@ -25,14 +28,27 @@ def index():
 @app.route('/hosttree',methods=['GET'])
 @login_required
 def hosttree():
-    return render_template("tree.html",username=session['username'])
+    return render_template("tree.html",username=session['username'],id=1)
 
 @app.route('/treedata',methods=['GET'])
 @login_required
 def treedata():
-    data = [{"title": '业务机器',"type": 'folder',"products": [{"title": 'iPhone',"type": 'item',"attr":{"id":"1"}}],"attr":{"id":"2"}}] 
-    return jsonify(data)
-
+    id = request.args.get('id')
+    host_result=host_info.query.all()
+    if len(host_result)==0:
+        return jsonify([{"name": u"未发现相关数据"}])
+    else: 
+        data=[]
+        grouplist=set([host.host_group for host in host_result])
+        for i in grouplist:
+            childreninfo=[{"name":k.description,"id":int(k.id)}  for k in host_result if k.host_group==i]
+            for child in childreninfo:
+                if int(child['id'])==int(id):
+                    child["checked"]="true"
+            print childreninfo
+            data.append({"name": i, "open":"true","children":childreninfo})
+        print data
+        return jsonify(data)
 
 @app.route('/login',methods=['GET','POST'])
 def login():
@@ -42,9 +58,11 @@ def login():
             error=u'用户名或密码错误'
             return jsonify({"error":1,"msg":error})
         else:
-            session['logged_in'] = True
-            session['username'] = request.form['username']
-            return jsonify({"error":0,"neturl":url_for("index")}) 
+            payload = { 'username': request.form['username'] }
+            token = jwt.generate_jwt(payload, app.config["TOKENKEY"], 'PS256', datetime.timedelta(minutes=5))
+            session["logged_in"]=True
+            session["username"]=request.form['username']
+            return jsonify({"error":0,"token":token,"nexturl":url_for("index")}) 
     else:
         return render_template("login.html")
 
@@ -107,19 +125,42 @@ def hostlistinfo():
 
 @app.route('/localinfo',methods=['GET'])
 def localinfo():
-    logical_cores=float(psutil.cpu_count())*2
-    now_load=float(os.getloadavg()[0])
-    loadpercent=now_load/logical_cores*100
-    diskpercent=psutil.disk_usage('/').percent
-    mempercent=psutil.virtual_memory().percent
-    return jsonify({"loadpercent":loadpercent,"diskpercent":diskpercent,"mempercent":mempercent})
-    
+    try:
+        token=request.headers["authkey"]
+        header, claims = jwt.verify_jwt(token, app.config["TOKENKEY"], ['PS256'])
+    except Exception,e:
+        return jsonify({"error":1,"msg":str(e)})
+    else:
+        logical_cores=float(psutil.cpu_count())*2
+        now_load=float(os.getloadavg()[0])
+        loadpercent=now_load/logical_cores*100
+        diskpercent=psutil.disk_usage('/').percent
+        mempercent=psutil.virtual_memory().percent
+        return jsonify({"error":0,"loadpercent":loadpercent,"diskpercent":diskpercent,"mempercent":mempercent})
+
+@app.route('/settings',methods=['GET'])
+@login_required
+def settings():
+    id=request.args.get('method',None)
+    return render_template("settings.html",username=session['username'],bodytype=id) 
+
+@app.route('/api/realtimeinfo',methods=['GET'])
+def realtimeinfo():
+    id=request.args.get('id',None)
+    print id
+    hostinfo=host_info.query.filter_by(id=id).first()
+    infodict=eval(hostinfo.information)
+    diskusage=float([diskitem for diskitem in infodict["disk_info"] if diskitem["mountpoint"]== "/"][0]["percent"])
+    memusage=float(infodict["mem_info"]["used"])/float(infodict["mem_info"]["total"])*100
+    loadusage=float(infodict["cpu_info"]["load_avg"].split()[0])/float(infodict["cpu_info"]["logical_cores"])*100
+    cacheusage=(float(infodict["mem_info"]["cached"])+float(infodict["mem_info"]["buffers"]))/float(infodict["mem_info"]["total"])*100
+    return jsonify({"diskusage":float(Decimal(diskusage).quantize(Decimal('0.00'))),"memusage":float(Decimal(memusage).quantize(Decimal('0.00'))),"loadusage":float(Decimal(loadusage).quantize(Decimal('0.00'))),"cacheusage":float(Decimal(cacheusage).quantize(Decimal('0.00')))})
 
 @app.route('/logout')
 def loginout():
     session.pop('logged_in', None)
     session.pop('username', None)
-    return redirect(url_for("login"))
+    return jsonify({"loginurl":url_for("login"),"error":0})
 
 
 @app.route('/api/posthostinfo',methods=['POST'])
@@ -140,6 +181,7 @@ def posthostinfo():
                  update_sql.description=description
                  db.session.commit()
          except Exception,e:
+             print str(e)
              return jsonify({"error":1,"msg":str(e)})
          else:
              return jsonify({"error":0})

@@ -1,4 +1,10 @@
 $(function() {
+$.ajaxSetup({beforeSend:function(request) {
+                        if (localStorage.getItem("tokenval")) {
+                              request.setRequestHeader("authkey",localStorage.getItem("tokenval"));
+                        }
+                    }
+});
     // 读取body data-type 判断是哪个页面然后执行相应页面方法，方法在下面。
     var dataType = $('body').attr('data-type');
     console.log(dataType);
@@ -34,6 +40,18 @@ function delhost(id) {
                 }else{
                 layer.msg(data.msg,{icon: 1});
                 }
+               }
+             });
+
+}
+function alogout() {
+         $.ajax({
+                url:'/logout',
+                type:'GET',
+                success:function(data){
+                console.log(data);
+                localStorage.clear(); 
+                window.location.replace(data.loginurl); 
                }
              });
 
@@ -76,13 +94,18 @@ function loaditem(){
                 type:'GET',
                 success:function(data){
                 console.log(data);
+                if (data.error==0){
                $('#cpuload').html(String(data.loadpercent)+'%');
                $('#cpuloadline').width(String(data.loadpercent)+'%');
                $('#diskload').html(String(data.diskpercent)+'%');
                $('#diskloadline').width(String(data.diskpercent)+'%');
                $('#memload').html(String(data.mempercent)+'%');
                $('#memloadline').width(String(data.mempercent)+'%');
-               }
+               }else{
+              layer.msg(data.msg);
+              window.location.replace('/login'); 
+}
+}
              });
 }
 catch (e) {
@@ -173,67 +196,151 @@ hosttables.ajax.reload();
 setInterval(recreatetable,5000);
 },
      "hosttree": function hosttree(){
+
 var hostid = $('body').attr('data-id');
-$("#test-circle").circliful({
-            animation: 0,
-            animationStep: 5,
-            foregroundBorderWidth: 6,
-            backgroundColor: "none",
-            fillColor: '#eee',
-            percent: 38,
-            textSize: 28,
-            textColor: '#666',
-            icon: 'f0a0',
-            iconPosition: 'middle',
-            textStyle:'font-size:19px;',
-            text: 'Space Left',
-            textBelow: true
-        });
-$("#test-circle1").circliful({
-            animation: 0,
-            animationStep: 5,
-            foregroundBorderWidth: 6,
-            backgroundColor: "none",
-            fillColor: '#eee',
-            percent: 38,
-            textStyle:'font-size:19px;',
-            textSize: 28,
-            textColor: '#666',
-            icon: 'f23a',
-            iconPosition: 'middle',
-            text: 'mem Left',
-            textBelow: true
-        });
-$("#test-circle2").circliful({
-            animation: 0,
-            animationStep: 5,
-            foregroundBorderWidth: 6,
-            backgroundColor: "none",
-            fillColor: '#eee',
-            percent: 38,
-            textSize: 28,
-            textStyle:'font-size:19px;',
-            textColor: '#666',
-            icon: 'f2d5',
-            iconPosition: 'middle',
-            text: 'cache Left',
-            textBelow: true
-        });
-$("#test-circle3").circliful({
-            animation: 0,
-            animationStep: 5,
-            foregroundBorderWidth: 6,
-            backgroundColor: "none",
-            fillColor: '#eee',
-            textStyle:'font-size:19px;',
-            percent: 38,
-            textSize: 28,
-            textColor: '#666',
-            icon: 'f0ae',
-            iconPosition: 'middle',
-            text: 'load Left',
-            textBelow: true
-        });
+function zTreeOnClick(event, treeId, treeNode) {
+    $('body').attr('data-id',treeNode.id);
+    hostid = $('body').attr('data-id');
+    var stateObject = {};
+    var title = "";
+    var newUrl = "/hostdetails?id="+hostid;
+    history.pushState(stateObject,title,newUrl);
+    recircliful(); 
+    var treeObj = $.fn.zTree.getZTreeObj(treeId);
+    var nodes = treeObj.getSelectedNodes();
+    console.log(nodes);
+    for (var i=0, l=nodes.length; i < l; i++) {
+    	treeObj.checkNode(nodes[i], true, true);
+    }
+};
+var setting = {
+check: {
+                enable: true,
+                chkStyle: "radio",
+                radioType: "all"
+        },
+        view: {
+                showLine: false
+        },
+        callback: {
+		onClick: zTreeOnClick
+	},
+        data: {
+                simpleData: {
+                        enable: true
+                }
+        }
+};
+
+function gettreedata() {
+         $.ajax({
+                url:'/treedata?id='+hostid,
+                type:'GET',
+                async: false,
+                success:function(data){
+                zNodes= data;
+               }
+             });
+         return zNodes;
+};
+
+$.fn.zTree.init($("#treeDemo"), setting,gettreedata()); 
+         $.ajax({
+                url:'/api/realtimeinfo?id='+hostid,
+                type:'GET',
+                success:function(data){
+                console.log(data);
+               }
+             });
+diskvar={"animation": 0,
+            "animationStep": 5,
+            "foregroundBorderWidth": 6,
+            "backgroundColor": "none",
+            "fillColor": "#eee",
+            "percent": 38,
+            "textSize": 28,
+            "textColor": "#666",
+            "icon": "f0a0",
+            "iconPosition": "middle",
+            "textStyle":"font-size:19px;",
+            "text": "Space Left",
+           "textBelow": true}
+memvar={"animation": 0,
+            "animationStep": 5,
+            "foregroundBorderWidth": 6,
+            "backgroundColor": "none",
+            "fillColor": "#eee",
+            "percent": 38,
+            "textSize": 28,
+            "textColor": "#666",
+            "icon": "f23a",
+            "iconPosition": "middle",
+            "textStyle":"font-size:19px;",
+            "text": "Mem Left",
+           "textBelow": true}
+cachevar={"animation": 0,
+            "animationStep": 5,
+            "foregroundBorderWidth": 6,
+            "backgroundColor": "none",
+            "fillColor": "#eee",
+            "percent": 38,
+            "textSize": 28,
+            "textColor": "#666",
+            "icon": "f2d5",
+            "iconPosition": "middle",
+            "textStyle":"font-size:19px;",
+            "text": "Cache Left",
+           "textBelow": true}
+loadvar={"animation": 0,
+            "animationStep": 5,
+            "foregroundBorderWidth": 6,
+            "backgroundColor": "none",
+            "fillColor": "#eee",
+            "percent": 38,
+            "textSize": 28,
+            "textColor": "#666",
+            "icon": "f0ae",
+            "iconPosition": "middle",
+            "textStyle":"font-size:19px;",
+            "text": "Load Left",
+           "textBelow": true}
+         $.ajax({
+                url:'/api/realtimeinfo?id='+hostid,
+                type:'GET',
+                success:function(data){
+diskvar.percent=data.diskusage;
+memvar.percent=data.memusage;
+cachevar.percent=data.cacheusage;
+loadvar.percent=data.loadusage;
+$("#test-circle").circliful(diskvar);
+$("#test-circle1").circliful(memvar);
+$("#test-circle2").circliful(cachevar);
+$("#test-circle3").circliful(loadvar);
+               }
+             });
+
+function recircliful() {
+         $.ajax({
+                url:'/api/realtimeinfo?id='+hostid,
+                type:'GET',
+                success:function(data){
+console.log(data)
+diskvar.percent=data.diskusage;
+memvar.percent=data.memusage;
+cachevar.percent=data.cacheusage;
+loadvar.percent=data.loadusage;
+$("#test-circle").empty();
+$("#test-circle").circliful(diskvar);
+$("#test-circle1").empty();
+$("#test-circle1").circliful(memvar);
+$("#test-circle2").empty();
+$("#test-circle2").circliful(cachevar);
+$("#test-circle3").empty();
+$("#test-circle3").circliful(loadvar);
+               }
+             });
+}
+setInterval(recircliful,2000);
 var echartsA = echarts.init(document.getElementById('tpl-echarts'));
 var echartsB = echarts.init(document.getElementById('tpl-echarts1'));
 var echartsC = echarts.init(document.getElementById('tpl-echarts2'));
@@ -325,9 +432,10 @@ echartsC.resize();
        $('#submitbutton').on('click', function(){ 
          var username=$('#user-name').val();
          var password=$('#user-pass').val();
-         $.ajax({
+         logindata=$.ajax({
                 url:'/login',
                 type:'POST',
+                async:false,
                 data:{
                     username:username,password:password
                 },
@@ -336,10 +444,12 @@ echartsC.resize();
                 {
                 layer.msg(data.msg,{icon: 2});
                 }else{
-                layer.msg("登陆成功",{icon: 1});
-                window.location.replace("/");
+                localStorage.clear();
+                localStorage.setItem("tokenval",data.token);
+                layer.msg("登陆成功",{icon: 1,time: 3000});
+                window.location.replace(data.nexturl);
                 }
-}
+                           }
                 });
       }); 
       $(document).keypress(function(e) {
@@ -358,8 +468,10 @@ echartsC.resize();
                 {
                 layer.msg(data.msg,{icon: 2});
                 }else{
+                localStorage.clear();
+                localStorage.setItem("tokenval",data.token);
                 layer.msg("登陆成功",{icon: 1,time: 3000});
-                window.location.replace("/");
+                window.location.replace(data.nexturl);
                 }
 }
                 });

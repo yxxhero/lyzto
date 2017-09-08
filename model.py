@@ -2,6 +2,7 @@ from flask import Flask
 from flask_script import Manager
 from flask_sqlalchemy import SQLAlchemy
 from datetime import date, datetime
+import  Crypto.PublicKey.RSA as RSA
 import json
 class MyEncoder(json.JSONEncoder):  
   def default(self, obj):  
@@ -12,9 +13,10 @@ class MyEncoder(json.JSONEncoder):
       else:  
           return json.JSONEncoder.default(self, obj)
 app=Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI']='mysql://root:chinatt_1347@192.168.111.60:3306/lyzto'
+app.config['SQLALCHEMY_DATABASE_URI']='mysql://root:chinatt_1347@192.168.111.70:3306/lyzto'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=True
 app.config['SECRET_KEY'] = 'jjskdjlkasjdlfjalk'
+app.config['TOKENKEY'] = RSA.generate(2048) 
 db = SQLAlchemy(app)
 manager = Manager(app)
 class userinfo(db.Model):
