@@ -165,11 +165,12 @@ setInterval(loaditem,5000);
  hosttables= $('#example-r').DataTable({
             ajax: {
             url: '/api/hostlistinfo',
+            async:false,
             dataSrc: 'hostinfodata'
             },
             columns: [
         { data: 'ip' ,width:'20%'},
-        { data: 'description',width:'20%'},
+        { data: 'description',width:'10%'},
         { data: 'status',width:'10%' ,"render": function (data, type, row, meta) {
            if (data==0){
            return data ='<i class="fa fa-circle" aria-hidden="true" style="color:green;"></i>'}
@@ -177,9 +178,19 @@ else
 {
 return data ='<i class="fa fa-circle" aria-hidden="true" style="color:red;"></i>'
 }
-}},
+}
+},
+        { data: 'enabled' ,width:'20%',"render":function (data, type, row, meta) {
+           if (data.split("^")[1]=="True"){
+           return data ='<input id="switch-state" data-size="xs" data-hostid='+data.split("^")[0]+' type="checkbox" checked />'}
+else
+{
+return data ='<input id="switch-state"   data-size="xs" data-hostid='+data.split("^")[0]+' type="checkbox" />'
+}
+}
+},
         { data: 'updatetime' ,width:'20%'},
-        { data: 'id' ,width:'30%',"orderable": false,"render": function (data, type, row, meta) {
+        { data: 'id' ,width:'20%',"orderable": false,"render": function (data, type, row, meta) {
            return data ='<div class="tpl-table-black-operation"> <a href="/hostdetails?id='+data+'"><i class="am-icon-pencil"></i> 详情</a><a href="javascript:;" onclick="delhost('+data+')" class="tpl-table-black-operation-del"><i class="am-icon-trash"></i> 删除</a></div>'
         }
 }
@@ -189,11 +200,49 @@ return data ='<i class="fa fa-circle" aria-hidden="true" style="color:red;"></i>
             "sEmptyTable": "数据为空" 
             }
         });
+$('#switch-state').bootstrapSwitch();
 function recreatetable() {
-console.log("yes");
 hosttables.ajax.reload();
+$('#switch-state').bootstrapSwitch();
+$('#switch-state').on('switchChange.bootstrapSwitch', function(event, state) {
+  var hostid=$(this).data("hostid");
+$.ajax({
+                url:'/api/changeswitch',
+                type:'POST',
+                data:{
+                    hostid:hostid,state:state
+                },
+                success:function(data){
+                if ( data.error == 1)
+                {
+                layer.msg(data.msg,{icon: 2});
+                }else{
+                layer.msg(data.msg);
+                }
+                           }
+                });
+  
+});
 }
-setInterval(recreatetable,5000);
+setInterval(recreatetable,30000);
+$('#switch-state').on('switchChange.bootstrapSwitch', function(event, state) {
+var hostid=$(this).data("hostid");
+$.ajax({
+                url:'/api/changeswitch',
+                type:'POST',
+                data:{
+                    hostid:hostid,state:state
+                },
+                success:function(data){
+                if ( data.error == 1)
+                {
+                layer.msg(data.msg,{icon: 2});
+                }else{
+                layer.msg(data.msg,{icon: 1});
+                }
+                           }
+                });
+});
 },
      "hosttree": function hosttree(){
 

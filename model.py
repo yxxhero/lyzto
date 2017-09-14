@@ -46,10 +46,48 @@ class host_info(db.Model):
     description = db.Column(db.String(100), unique=True)
     information=db.Column(db.Text(1200))
     host_group=db.Column(db.String(100),server_default="default")
-    updatetime = db.Column(db.TIMESTAMP(True), nullable=False)
+    enabled = db.Column(db.Boolean,server_default="1")
+    updatetime = db.Column(db.DateTime, nullable=False)
 
     def __repr__(self):
-        return json.dumps({"id":self.id,"ip":self.ip,"infomation":self.information,"updatetime":self.updatetime,"description":self.description}) 
+        return json.dumps({"id":self.id,"ip":self.ip,"infomation":self.information,"enabled":self.enabled,"updatetime":self.updatetime,"description":self.description},cls=MyEncoder) 
+class load_trend(db.Model):
+    __tablename__ = 'load_trend'
+    id = db.Column(db.Integer, primary_key=True)
+    ip = db.Column(db.String(100), unique=False)
+    load_value = db.Column(db.String(100), unique=False)
+    updatetime = db.Column(db.DateTime, nullable=False)
+
+    def __repr__(self):
+        return json.dumps({"id":self.id,"ip":self.ip,"load_value":self.load_value,"updatetime":self.updatetime},cls=MyEncoder) 
+class connect_trend(db.Model):
+    __tablename__ = 'connect_trend'
+    id = db.Column(db.Integer, primary_key=True)
+    ip = db.Column(db.String(100), unique=False)
+    establish_value = db.Column(db.String(100), unique=False)
+    listen_value = db.Column(db.String(100), unique=False)
+    updatetime = db.Column(db.DateTime, nullable=False)
+
+    def __repr__(self):
+        return json.dumps({"id":self.id,"ip":self.ip,"connect_value":self.load_value,"updatetime":self.updatetime},cls=MyEncoder) 
+class settings(db.Model):
+    __tablename__ = 'settings'
+    id = db.Column(db.Integer, primary_key=True)
+    set_name = db.Column(db.String(100), unique=False)
+    set_value = db.Column(db.String(100), unique=False)
+    def __repr__(self):
+        return json.dumps({"id":self.id,"set_name":self.set_name,"set_value":self.set_value}) 
+class flow_trend(db.Model):
+    __tablename__ = 'flow_trend'
+    id = db.Column(db.Integer, primary_key=True)
+    ip = db.Column(db.String(100), unique=False)
+    sent_value = db.Column(db.String(100), unique=False)
+    recv_value = db.Column(db.String(100), unique=False)
+    iface = db.Column(db.String(100), unique=False)
+    updatetime = db.Column(db.DateTime, nullable=False)
+
+    def __repr__(self):
+        return json.dumps({"id":self.id,"ip":self.ip,"iface":self.iface,"flow_value":self.load_value,"updatetime":self.updatetime},cls=MyEncoder) 
 
 class event_info(db.Model):
     __tablename__ = 'event_info'

@@ -1,0 +1,62 @@
+{
+  "name": "amazeui-switch",
+  "version": "3.3.3",
+  "description": "Amaze UI switch 开关插件",
+  "main": "amazeui.switch.min.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/amazeui/chosen.git"
+  },
+  "keywords": [
+    "amazeui-plugin",
+    "amaze-ui",
+    "AMUI",
+    "switch",
+    "jquery-plugin"
+  ],
+  "author": "harvesthq",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/amazeui/switch/issues"
+  },
+  "homepage": "http://amazeui.github.io/switch/",
+  "licenses": [
+    {
+      "type": "Apache",
+      "url": "https://github.com/nostalgiaz/bootstrap-switch/blob/master/LICENSE"
+    }
+  ],
+  "devDependencies": {
+    "amazeui-doc-util": "latest",
+    "browser-sync": "^2.3.0",
+    "browserify": "^13.0.1",
+    "browserify-shim": "^3.8.2",
+    "del": "^2.2.1",
+    "gulp": "^3.8.10",
+    "gulp-autoprefixer": "^3.1.0",
+    "gulp-csso": "^2.0.0",
+    "gulp-gh-pages": "^0.5.4",
+    "gulp-less": "^3.1.0",
+    "gulp-load-plugins": "^1.2.4",
+    "gulp-rename": "^1.2.0",
+    "gulp-uglify": "^1.1.0",
+    "markit-json": "^0.2.1",
+    "run-sequence": "^1.0.2",
+    "through2": "^2.0.1",
+    "vinyl-transform": "^1.0.0"
+  },
+  "dependencies": {
+    "amazeui": "^2.1.0"
+  },
+  "browserify": {
+    "transform": [
+      "browserify-shim"
+    ]
+  },
+  "browserify-shim": {
+    "jquery": "global:jQuery"
+  }
+}
