@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="/static/assets/css/amazeui.min.css" />
     <link rel="stylesheet" href="/static/assets/css/amazeui.datatables.min.css" />
     <link rel="stylesheet" href="/static/assets/css/app.css">
+    <link rel="stylesheet" href="/static/jRange/jquery.range.css">
     <script src="/static/assets/js/jquery.min.js"></script>
 {% endblock %}
 {% block bodytype %}
@@ -28,23 +29,40 @@
                     <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
                         <div class="widget am-cf">
                             <div class="widget-head am-cf">
-                                <div class="widget-title am-fl">报警设置</div>
+                                <div class="widget-title am-fl">线条表单</div>
+                                <div class="widget-function am-fr">
+                                    <a href="javascript:;" class="am-icon-cog"></a>
+                                </div>
                             </div>
                             <div class="widget-body am-fr">
+
                                 <form class="am-form tpl-form-line-form">
                                     <div class="am-form-group">
-                                        <label for="user-name" class="am-u-sm-3 am-form-label">次数 <span class="tpl-form-line-small-title">Times</span></label>
+                                        <label for="user-name" class="am-u-sm-3 am-form-label" style="padding-top: 0px;">内存阈值:</label>
                                         <div class="am-u-sm-9">
-                                            <input type="text" class="tpl-form-input" id="alarmtimes" placeholder="请输入整型数字">
-                                            <small>报警次数(times/hour) 当前值:{{alarmvalue}}</small>
+                                            <input type="text" class="slider-input" id="memrange" value ="23">
                                         </div>
                                     </div>
-
+                                    <div class="am-form-group">
+                                        <label for="user-name" class="am-u-sm-3 am-form-label">根分区 <span class="tpl-form-line-small-title">root</span></label>
+                                        <div class="am-u-sm-9">
+                                            <input type="text" class="tpl-form-input" id="rootrange" placeholder="请输入标题文字">
+                                            <small>根分区阈值</small>
+                                        </div>
+                                    </div>
+                                    <div class="am-form-group">
+                                        <label for="user-name" class="am-u-sm-3 am-form-label">负载 <span class="tpl-form-line-small-title">load</span></label>
+                                        <div class="am-u-sm-9">
+                                            <input type="text" class="tpl-form-input" id="loadrange" placeholder="请输入标题文字">
+                                            <small>负载阈值</small>
+                                        </div>
+                                    </div>
                                     <div class="am-form-group">
                                         <div class="am-u-sm-9 am-u-sm-push-3">
                                             <button type="button" id="alarmbutton" class="am-btn am-btn-primary tpl-btn-bg-color-success">提交</button>
                                         </div>
                                     </div>
+
                                 </form>
                             </div>
                         </div>
@@ -61,5 +79,6 @@
     <script src="/static/assets/js/amazeui.datatables.min.js"></script>
     <script src="/static/assets/js/dataTables.responsive.min.js"></script>
     <script src="/static/layer/layer.js"></script>
+    <script src="/static/jRange/jquery.range.js"></script>
     <script src="/static/assets/js/app.js"></script>
 {% endblock %}

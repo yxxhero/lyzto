@@ -179,11 +179,26 @@ $.ajax({
                 layer.msg(data.msg,{icon: 2});
                 }else{
                 layer.msg(data.msg,{icon: 1});
+                location.reload()
                 }
                            }
                 });
 
 });
+},
+"threshold": function threshold() {
+$('#memrange').jRange({
+    from: 0.0,
+    to: 100.0,
+    step: 0.5,
+    scale: [0.0,10.0,20.0,30.0,40.0,50.0,60.0,70.0,80.0,90.0,100.0],
+    format: '%s',
+    width: 400,
+    showLabels: true,
+    snap: true
+});
+
+
 },
     'widgets': function indexData() {
  hosttables= $('#example-r').DataTable({

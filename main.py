@@ -16,7 +16,7 @@ from functools import wraps
 @app.before_request
 def make_session_permanent():
     session.permanent = True
-    app.permanent_session_lifetime = datetime.timedelta(days=10)
+    app.permanent_session_lifetime = datetime.timedelta(minutes=10)
 
 def login_required(func):
     @wraps(func)
@@ -149,7 +149,12 @@ def localinfo():
 def settingshtml():
     id=request.args.get('method',None)
     templateid="settings-"+id+".html"
-    return render_template(templateid,username=session['username'],bodytype=id) 
+    if id == "alarmset":
+        times_obj=settings.query.filter_by(set_name="times").first()
+        alarmvalue=times_obj.set_value
+        return render_template(templateid,username=session['username'],bodytype=id,alarmvalue=alarmvalue) 
+    else:
+        return render_template(templateid,username=session['username'],bodytype=id) 
 
 @app.route('/api/realtimeinfo',methods=['GET'])
 def realtimeinfo():
