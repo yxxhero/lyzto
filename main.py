@@ -64,11 +64,11 @@ def login():
             error=u'用户名或密码错误'
             return jsonify({"error":1,"msg":error})
         else:
-            payload = { 'username': request.form['username'] }
-            token = jwt.generate_jwt(payload, app.config["TOKENKEY"], 'PS256', datetime.timedelta(minutes=5))
+            #payload = { 'username': request.form['username'] }
+            #token = jwt.generate_jwt(payload, app.config["TOKENKEY"], 'PS256', datetime.timedelta(minutes=5))
             session["logged_in"]=True
             session["username"]=request.form['username']
-            return jsonify({"error":0,"token":token,"nexturl":url_for("index")}) 
+            return jsonify({"error":0,"token":"notused","nexturl":url_for("index")}) 
     else:
         return render_template("login.html")
 
@@ -133,7 +133,7 @@ def hostlistinfo():
 def localinfo():
     try:
         token=request.headers["authkey"]
-        header, claims = jwt.verify_jwt(token, app.config["TOKENKEY"], ['PS256'])
+        #header, claims = jwt.verify_jwt(token, app.config["TOKENKEY"], ['PS256'])
     except Exception,e:
         return jsonify({"error":1,"msg":str(e)})
     else:
@@ -228,5 +228,5 @@ def posthostinfo():
         return jsonify({"error":1,"msg":"info Incomplete"})
 
 
-if __name__=='__main__':
-    app.run(host='0.0.0.0',port=8090,debug=True)
+#if __name__=='__main__':
+#    app.run(host='0.0.0.0',port=8090,debug=True)

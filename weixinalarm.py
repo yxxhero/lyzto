@@ -10,12 +10,6 @@ import os
 import logging
 reload(sys)
 sys.setdefaultencoding('utf8')
-#日志模式初始化
-logging.basicConfig(level="DEBUG",
-                format='%(asctime)s  %(levelname)s %(message)s',
-                datefmt='%Y-%m-%d %H:%M:%S',
-                filename='./lyzto.log',
-                filemode='a')
 class weixinalarm(object):
     def __init__(self,corpid,secrect,agentid):
         self.corpid=corpid
