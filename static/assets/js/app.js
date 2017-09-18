@@ -161,6 +161,30 @@ setInterval(loaditem,5000);
 
         echartsA.setOption(option);
     },
+    'alarmset': function alarmset(){
+$('#alarmbutton').click(
+function(){
+console.log(this);
+var times=$("#alarmtimes").val();
+
+$.ajax({
+                url:'/api/changesettings',
+                type:'POST',
+                data:{
+                    times:times
+                },
+                success:function(data){
+                if ( data.error == 1)
+                {
+                layer.msg(data.msg,{icon: 2});
+                }else{
+                layer.msg(data.msg,{icon: 1});
+                }
+                           }
+                });
+
+});
+},
     'widgets': function indexData() {
  hosttables= $('#example-r').DataTable({
             ajax: {

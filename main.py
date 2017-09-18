@@ -4,7 +4,7 @@ from flask import session,redirect,url_for,escape
 from flask import request
 from flask import render_template
 from flask import jsonify,abort
-from model import db,app,userinfo,event_info,host_info,load_trend,connect_trend,flow_trend
+from model import db,app,userinfo,event_info,host_info,load_trend,connect_trend,flow_trend,settings
 import psutil
 import os
 import time
@@ -146,9 +146,10 @@ def localinfo():
 
 @app.route('/settings',methods=['GET'])
 @login_required
-def settings():
+def settingshtml():
     id=request.args.get('method',None)
-    return render_template("settings.html",username=session['username'],bodytype=id) 
+    templateid="settings-"+id+".html"
+    return render_template(templateid,username=session['username'],bodytype=id) 
 
 @app.route('/api/realtimeinfo',methods=['GET'])
 def realtimeinfo():
@@ -192,6 +193,29 @@ def alarmswitch():
     else:
         return jsonify({"error":1,"msg":"id or enabled is null"})
 
+
+@app.route('/api/changesettings',methods=['POST'])
+def changesettings():
+    times=request.form.get("times",None)
+    print times
+    if times:
+        try:
+            times=int(times)
+            tm_result=settings.query.filter_by(set_name="times").all()
+            if len(tm_result):
+                times_obj=settings.query.filter_by(set_name="times").first()
+                times_obj.set_value=times
+                db.session.commit()
+            else:
+                db.session.add(settings(set_name='times',set_value=times))
+                db.session.commit()
+        except Exception,e:
+            return jsonify({"error":1,"msg":"输入不合法"})
+        else:
+            return jsonify({"error":0,"msg":"修改成功"})
+    else:
+        return jsonify({"error":1,"msg":"输入不合法"})
+        
 
 @app.route('/api/posthostinfo',methods=['POST'])
 def posthostinfo():

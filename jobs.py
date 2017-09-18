@@ -14,8 +14,8 @@ config=ConfigObj("etc/lyzto.conf",encoding="UTF8")
 agentid=config["weixin"]["agentid"]
 secrect=config["weixin"]["secrect"]
 corpid=config["weixin"]["corpid"]
+times_default=int(config["alarm"]["times"])-2
 weixinsender=weixinalarm(corpid=corpid,secrect=secrect,agentid=agentid)
-times=int(config["alarm"]["times"])-2
 import MySQLdb
 from DBUtils.PersistentDB import PersistentDB
 #mysql连接池类
@@ -38,6 +38,13 @@ class MysqlConnectionPool(object):
 
 def getMysqlConnection():
     return MysqlConnectionPool()
+#报警次数
+def getalarmtimes():
+    with getMysqlConnection() as db:
+        times_sql="select * from settings where set_name='times';;"
+        db.cursor.execute(times_sql)
+        times_result=db.cursor.fetchall()
+    return times_result[0]["set_value"]
 #日志模式初始化
 logging.basicConfig(level="DEBUG",
                 format='%(asctime)s  %(levelname)s %(message)s',
@@ -50,6 +57,13 @@ def alarmpolicy(mid,des,itemtype):
         db.cursor.execute(sql)
         status_info=db.cursor.fetchall()
         if len(status_info):
+            try:
+                times=int(getalarmtimes())
+            except Exception,e:
+                logging.error(str(e))
+                times=int(times_default)
+            else:
+                pass
             if int(time.time())- round(float(status_info[0]["alarm_time"]))<= 3600 and int(status_info[0]["alarm_times"]) <= times:
                 if int(status_info[0]["alarm_times"]) == times:
                     weixinsender.sendmsg(title=itemtype+"(当前时间最后一次报警)",description=des)
@@ -213,7 +227,7 @@ def checkprocesslist(arg):
                     logging.info(des)
                 else:
                     logging.info("进程检测正常")
-                    checkstatus(str(loadinfo["description"]),"proc")
+                    checkstatus(str(procinfo["description"]),"proc")
                     continue 
                 if procinfo["enabled"]:
                     alarmpolicy(procinfo["description"],des,"proc")
@@ -222,7 +236,7 @@ def checkprocesslist(arg):
         else:
             logging.info("未发现进程相关数据")
 
-@timer(60)
+@timer(5)
 def checkreport(arg):
     with getMysqlConnection() as db:
         sql="select * from host_info;"
