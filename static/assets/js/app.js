@@ -19,7 +19,6 @@ $.ajaxSetup({beforeSend:function(request) {
     autoLeftNav();
     $(window).resize(function() {
         autoLeftNav();
-        console.log($(window).width())
     });
 
     //    if(storageLoad('SelcetColor')){
@@ -164,7 +163,6 @@ setInterval(loaditem,5000);
     'alarmset': function alarmset(){
 $('#alarmbutton').click(
 function(){
-console.log(this);
 var times=$("#alarmtimes").val();
 
 $.ajax({
@@ -191,14 +189,72 @@ $('#memrange').jRange({
     from: 0.0,
     to: 100.0,
     step: 0.5,
-    scale: [0.0,10.0,20.0,30.0,40.0,50.0,60.0,70.0,80.0,90.0,100.0],
-    format: '%s',
-    width: 400,
+    format: '%s %',
+    width: $('.slider-input').parent("div").width()*0.8,
+    showLabels: true,
+    snap: true
+});
+$('#loadrange').jRange({
+    from: 0.0,
+    to: 100.0,
+    step: 0.5,
+    format: '%s %',
+    width: $('.slider-input').parent("div").width()*0.8,
     showLabels: true,
     snap: true
 });
 
+$('#rootrange').jRange({
+    from: 0.0,
+    to: 100.0,
+    step: 0.5,
+    format: '%s %',
+    width: $('.slider-input').parent("div").width()*0.8,
+    showLabels: true,
+    snap: true
+});
+$.ajax({
+                url:'/api/rangeinfo',
+                type:'GET',
+                success:function(data){
+                if ( data.error == 1)
+                {
+                layer.msg(data.msg,{icon: 2});
+                }else{
+                $('#memrange').jRange('setValue', data.memrange);
+                $('#loadrange').jRange('setValue', data.loadrange);
+                $('#rootrange').jRange('setValue', data.rootrange);
+                }
+                           }
+                });
+ $(window).resize(function() {
+        	$('.slider-input').jRange("setWidth",$('.slider-input').parent("div").width()*0.8);
+        });
+$('#rangebutton').click(
+function(){
+var loadrange=$("#loadrange").val();
+var memrange=$("#memrange").val();
+var rootrange=$("#rootrange").val();
 
+$.ajax({
+                url:'/api/setrange',
+                type:'POST',
+                data:{
+                    loadrange:loadrange,
+                    memrange:memrange,
+                    rootrange:rootrange
+                },
+                success:function(data){
+                if ( data.error == 1)
+                {
+                layer.msg(data.msg,{icon: 2});
+                }else{
+                layer.msg(data.msg,{icon: 1});
+                }
+                           }
+                });
+
+});
 },
     'widgets': function indexData() {
  hosttables= $('#example-r').DataTable({

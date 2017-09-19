@@ -100,6 +100,18 @@ def eventinfo():
     for el in eventlist:
         eventdic["eventdata"].append({"id":el.id,"ip":el.ip,"event":el.information,"createtime":str(el.create_time)})
     return jsonify(eventdic)
+
+@app.route('/api/rangeinfo',methods=['GET'])
+@login_required
+def rangeinfo():
+    try:
+        loadrange=settings.query.filter_by(set_name="loadrange").first()
+        memrange=settings.query.filter_by(set_name="memrange").first()
+        rootrange=settings.query.filter_by(set_name="rootrange").first()
+    except Exception,e:
+        return jsonify({"error":1,"msg":str(e)})
+    else:
+        return jsonify({"error":0,"loadrange":loadrange.set_value,"memrange":memrange.set_value,"rootrange":rootrange.set_value})
     
 @app.route('/deletehost',methods=['GET'])
 @login_required
@@ -221,6 +233,26 @@ def changesettings():
     else:
         return jsonify({"error":1,"msg":"输入不合法"})
         
+@app.route('/api/setrange',methods=['POST'])
+def setrange():
+    rootrange=request.form.get("rootrange",None)
+    loadrange=request.form.get("loadrange",None)
+    memrange=request.form.get("memrange",None)
+    if all([rootrange,loadrange,memrange]):
+        try:
+            root_obj=settings.query.filter_by(set_name="rootrange").first()
+            mem_obj=settings.query.filter_by(set_name="memrange").first()
+            load_obj=settings.query.filter_by(set_name="loadrange").first()
+            root_obj.set_value=rootrange
+            mem_obj.set_value=memrange
+            load_obj.set_value=loadrange
+            db.session.commit()
+        except Exception,e:
+            return jsonify({"error":1,"msg":"输入不合法"})
+        else:
+            return jsonify({"error":0,"msg":"修改成功"})
+    else:
+        return jsonify({"error":1,"msg":"输入不合法"})
 
 @app.route('/api/posthostinfo',methods=['POST'])
 def posthostinfo():

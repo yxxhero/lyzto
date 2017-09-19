@@ -357,6 +357,31 @@
 			this.options.disable = !this.options.disable;
 			this.isReadonly();
 		},
+                reset: function() {
+                      this.inputNode.next().remove();
+                      this.options.value = this.inputNode.val() || (this.options.isRange ? this.options.from + ',' + this.options.from : '' + this.options.from);
+                      this.domNode = $(this.template);
+                      this.domNode.addClass(this.options.theme);
+                      this.inputNode.after(this.domNode);
+                      this.domNode.on('change', this.onChange);
+                      this.pointers = $('.pointer', this.domNode);
+                      this.lowPointer = this.pointers.first();
+                      this.highPointer = this.pointers.last();
+                      this.labels = $('.pointer-label', this.domNode);
+                      this.lowLabel = this.labels.first();
+                      this.highLabel = this.labels.last();
+                      this.scale = $('.scale', this.domNode);
+                      this.bar = $('.selected-bar', this.domNode);
+                      this.clickableBar = this.domNode.find('.clickable-dummy');
+                      this.interval = this.options.to - this.options.from;
+                      this.render();
+                },
+          	setWidth: function(width) {
+                console.log("11111");
+        	this.options.width = width;
+        	this.domNode.width(this.options.width);
+        	this.reset();
+        	},
 		updateRange: function(range, value) {
 			var values = range.toString().split(',');
 			this.interval = parseInt(values[1]) - parseInt(values[0]);

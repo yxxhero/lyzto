@@ -38,11 +38,11 @@ class MysqlConnectionPool(object):
 
 def getMysqlConnection():
     return MysqlConnectionPool()
-#报警次数
-def getalarmtimes():
+#获取mysql的值
+def getsetvalue(name):
     with getMysqlConnection() as db:
-        times_sql="select * from settings where set_name='times';;"
-        db.cursor.execute(times_sql)
+        value_sql="select * from settings where set_name='%s';" %(name)
+        db.cursor.execute(value_sql)
         times_result=db.cursor.fetchall()
     return times_result[0]["set_value"]
 #日志模式初始化
@@ -58,10 +58,10 @@ def alarmpolicy(mid,des,itemtype):
         status_info=db.cursor.fetchall()
         if len(status_info):
             try:
-                times=int(getalarmtimes())
+                times=int(getsetvalue(name="times"))-2
             except Exception,e:
                 logging.error(str(e))
-                times=int(times_default)
+                times=int(times_default)-2
             else:
                 pass
             if int(time.time())- round(float(status_info[0]["alarm_time"]))<= 3600 and int(status_info[0]["alarm_times"]) <= times:
@@ -141,8 +141,9 @@ def checkstatus(mid,itemtype):
             
             
     
-@timer(300)
+@timer(5)
 def checkdisk(arg):
+    rootrange=float(getsetvalue(name="rootrange"))
     with getMysqlConnection() as db:
         sql="select * from host_info;"
         db.cursor.execute(sql)
@@ -151,7 +152,7 @@ def checkdisk(arg):
             for diskinfo in disk_list:
                 infodict=eval(diskinfo["information"])
                 rootusage=float([diskitem for diskitem in infodict["disk_info"] if diskitem["mountpoint"]== "/"][0]["percent"])
-                if rootusage >= 90:
+                if rootusage >= rootrange:
                     des='根分区已使用'+str(rootusage)+'%,及时清理('+str(diskinfo["description"])+')'
                     logging.info(des)
                 else:
@@ -165,8 +166,9 @@ def checkdisk(arg):
         else:
             logging.info("未发现disk相关数据")
 
-@timer(300)
+@timer(3)
 def checkmem(arg):
+    memrange=float(getsetvalue(name="memrange"))
     with getMysqlConnection() as db:
         sql="select * from host_info;"
         db.cursor.execute(sql)
@@ -174,8 +176,8 @@ def checkmem(arg):
         if len(mem_list):
             for meminfo in mem_list:
                 infodict=eval(meminfo["information"])
-                if float(infodict["mem_info"]["used"])/float(infodict["mem_info"]["total"]) > 80:
-                    des='内存大于80%,及时处理('+str(meminfo["description"])+')'
+                if float(infodict["mem_info"]["used"])/float(infodict["mem_info"]["total"])*100 > memrange:
+                    des='内存大于'+str(memrange)+'%,及时处理('+str(meminfo["description"])+')'
                     logging.info(des)
                 else:
                     logging.info("内存检测正常")
@@ -190,6 +192,7 @@ def checkmem(arg):
 
 @timer(300)
 def checkload(arg):
+    loadrange=float(getsetvalue(name="memrange"))
     with getMysqlConnection() as db:
         sql="select * from host_info;"
         db.cursor.execute(sql)
@@ -197,7 +200,7 @@ def checkload(arg):
         if len(load_list):
             for loadinfo in load_list:
                 infodict=eval(loadinfo["information"])
-                if float(infodict["cpu_info"]["load_avg"].split()[0]) > float(infodict["cpu_info"]["logical_cores"])*1.5:
+                if float(infodict["cpu_info"]["load_avg"].split()[0]) / float(infodict["cpu_info"]["logical_cores"]) / 1.5 * 100 > loadrange:
                     des='负载过高，及时处理('+str(loadinfo["description"])+')'+' value:'+str(infodict["cpu_info"]["load_avg"].split()[0])
                     logging.info(des)
                 else:
@@ -245,7 +248,7 @@ def checkreport(arg):
         if len(repo_list):
             for repoinfo in repo_list:
                 if abs(time.time() - time.mktime(time.strptime(str(repoinfo["updatetime"]),"%Y-%m-%d %H:%M:%S"))) > 300:
-                    des='上报错误('+str(repoinfo["description"])+')'
+                    des='上报超时('+str(repoinfo["description"])+')'
                     logging.error(des)
                 else:
                     checkstatus(repoinfo["description"],"report")
