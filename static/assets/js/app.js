@@ -47,6 +47,7 @@ function alogout() {
          $.ajax({
                 url:'/logout',
                 type:'GET',
+                async:false,
                 success:function(data){
                 console.log(data);
                 localStorage.clear(); 
@@ -488,18 +489,19 @@ setInterval(recircliful,2000);
 var echartsA = echarts.init(document.getElementById('tpl-echarts'));
 var echartsB = echarts.init(document.getElementById('tpl-echarts1'));
 var echartsC = echarts.init(document.getElementById('tpl-echarts2'));
+function getechartdata(etype) {
+$.ajax({
+                url:'http://192.168.111.70:6666/api/trendinfo',
+                type:'POST',
+                async:false,
+                data:{etype:etype},
+                success:function(data){
 options = {
     tooltip : {
         trigger: 'axis',
-        axisPointer: {
-            type: 'cross',
-            label: {
-                backgroundColor: '#6a7985'
-            }
+        position: function (pt) {
+            return [pt[0], '10%'];
         }
-    },
-    legend: {
-        data:['邮件营销','联盟广告','视频广告','直接访问','搜索引擎']
     },
     grid: {
         left: '3%',
@@ -511,7 +513,7 @@ options = {
         {
             type : 'category',
             boundaryGap : false,
-            data : ['周一','周二','周三','周四','周五','周六','周日']
+            data:data.xaix
         }
     ],
     yAxis : [
@@ -521,37 +523,9 @@ options = {
     ],
     series : [
         {
-            name:'邮件营销',
+            name:'负载值',
             type:'line',
-            stack: '总量',
-            areaStyle: {normal: {}},
-            data:[120, 132, 101, 134, 90, 230, 210]
-        },
-        {
-            name:'联盟广告',
-            type:'line',
-            stack: '总量',
-            areaStyle: {normal: {}},
-            data:[220, 182, 191, 234, 290, 330, 310]
-        },
-        {
-            name:'视频广告',
-            type:'line',
-            stack: '总量',
-            areaStyle: {normal: {}},
-            data:[150, 232, 201, 154, 190, 330, 410]
-        },
-        {
-            name:'直接访问',
-            type:'line',
-            stack: '总量',
-            areaStyle: {normal: {}},
-            data:[320, 332, 301, 334, 390, 330, 320]
-        },
-        {
-            name:'搜索引擎',
-            type:'line',
-            stack: '总量',
+            itemStyle : { normal: {label : {show: true}}},
             label: {
                 normal: {
                     show: true,
@@ -559,13 +533,17 @@ options = {
                 }
             },
             areaStyle: {normal: {}},
-            data:[820, 932, 901, 934, 1290, 1330, 1320]
+            data:data.data
         }
     ]
 };
-echartsA.setOption(options);
-echartsB.setOption(options);
-echartsC.setOption(options);
+}
+                });
+return options;
+}
+echartsA.setOption(getechartdata("loadinfo"));
+echartsB.setOption(getechartdata("conninfo"));
+echartsC.setOption(getechartdata("flowinfo"));
 window.addEventListener("resize", function () {
 echartsA.resize();
 echartsB.resize();
