@@ -12,6 +12,8 @@ import python_jwt as jwt
 import datetime
 from decimal import Decimal
 from functools import wraps
+import pandas as pd
+import MySQLdb
 
 @app.before_request
 def make_session_permanent():
@@ -51,9 +53,7 @@ def treedata():
             for child in childreninfo:
                 if int(child['id'])==int(id):
                     child["checked"]="true"
-            print childreninfo
             data.append({"name": i, "open":"true","children":childreninfo})
-        print data
         return jsonify(data)
 
 @app.route('/login',methods=['GET','POST'])
@@ -185,6 +185,30 @@ def realtimeinfo():
         cacheusage=0
     return jsonify({"diskusage":float(Decimal(diskusage).quantize(Decimal('0.00'))),"memusage":float(Decimal(memusage).quantize(Decimal('0.00'))),"loadusage":float(Decimal(loadusage).quantize(Decimal('0.00'))),"cacheusage":float(Decimal(cacheusage).quantize(Decimal('0.00')))})
 
+@app.route('/api/trendinfo',methods=['POST'])
+def trendinfo():
+    etype=request.form.get('etype')
+    mysql_cn= MySQLdb.connect(host='localhost', port=3306,user='root', passwd='chinatt_1347', db='lyzto')
+    if etype == "loadinfo" or etype == "flowinfo":
+        df = pd.read_sql('select * from load_trend;', con=mysql_cn)   
+        df.load_value.astype(float)
+        datas = df.load_value.values
+        dates = df.updatetime.values
+        ts=pd.Series(datas,index=dates)
+        tsresample=ts.resample('5T',closed="left",label='left').mean().bfill()
+        mysql_cn.close()
+        return jsonify({"xaix":list(tsresample.index.strftime('%Y-%m-%d %H:%M:%S')),"data":list(tsresample.values)})
+    else:
+        df = pd.read_sql('select * from connect_trend;', con=mysql_cn)   
+        df.establish_value.astype(int)
+        datas = df.establish_value.values
+        dates = df.updatetime.values
+        ts=pd.Series(datas,index=dates,dtype=int)
+        tsresample=ts.resample('5T',closed="left",label='left').mean().bfill()
+        mysql_cn.close()
+        return jsonify({"xaix":list(tsresample.index.strftime('%Y-%m-%d %H:%M:%S')),"data":list(tsresample.values)})
+        
+
 @app.route('/logout')
 def loginout():
     session.pop('logged_in', None)
@@ -214,7 +238,6 @@ def alarmswitch():
 @app.route('/api/changesettings',methods=['POST'])
 def changesettings():
     times=request.form.get("times",None)
-    print times
     if times:
         try:
             times=int(times)
@@ -281,13 +304,11 @@ def posthostinfo():
                  update_sql.updatetime=time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
                  db.session.commit()
          except Exception,e:
-             print str(e)
              return jsonify({"error":1,"msg":str(e)})
          else:
              return jsonify({"error":0})
     else:
         return jsonify({"error":1,"msg":"info Incomplete"})
 
-
-#if __name__=='__main__':
-#    app.run(host='0.0.0.0',port=8090,debug=True)
+if __name__ == '__main__':
+    app.run(debug=True,host='0.0.0.0',port=6666)

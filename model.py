@@ -55,7 +55,7 @@ class load_trend(db.Model):
     __tablename__ = 'load_trend'
     id = db.Column(db.Integer, primary_key=True)
     ip = db.Column(db.String(100), unique=False)
-    load_value = db.Column(db.String(100), unique=False)
+    load_value = db.Column(db.Float, unique=False)
     updatetime = db.Column(db.DateTime, nullable=False)
 
     def __repr__(self):
@@ -65,7 +65,7 @@ class connect_trend(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     ip = db.Column(db.String(100), unique=False)
     establish_value = db.Column(db.String(100), unique=False)
-    listen_value = db.Column(db.String(100), unique=False)
+    listen_value = db.Column(db.Integer, unique=False)
     updatetime = db.Column(db.DateTime, nullable=False)
 
     def __repr__(self):
@@ -82,7 +82,7 @@ class flow_trend(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     ip = db.Column(db.String(100), unique=False)
     sent_value = db.Column(db.String(100), unique=False)
-    recv_value = db.Column(db.String(100), unique=False)
+    recv_value = db.Column(db.Float, unique=False)
     iface = db.Column(db.String(100), unique=False)
     updatetime = db.Column(db.DateTime, nullable=False)
 
